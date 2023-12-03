@@ -4,3 +4,15 @@ El objetivo es encontrar la asignación con coste mínimo entre los operarios y 
 <p align="center">
   <img width="389" alt="Captura de pantalla 2023-12-03 a las 12 04 50" src="https://github.com/Jav2000/EAS-GAP-problem/assets/92857248/97d505b2-abdb-43de-b9ac-05b570571d02">
 </p>
+
+# Formato entrada
+    - Matriz de coste: (Columnas igual a operadores, filas igual a tareas)
+        2 3 2 3 2
+        3 2 2 3 1
+        4 3 1 3 2
+        1 2 2 3 2
+    - Vector de tiempo requerido por tarea:
+        3 2 2 3
+    - Vector de tiempo disponible por operador:
+        4 5 3 4 4
+
