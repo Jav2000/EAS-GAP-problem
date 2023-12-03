@@ -24,7 +24,7 @@ El objetivo es encontrar la asignación con coste mínimo entre los operarios y 
   - Ratio de evaporación
 
 # Inicialización de feromonas
-La matriz de feromonas representa la cantidad que hay de ella en cada camino entre los nodos. Se inializan sus valores a $\frac{num\_hormigas}{c_{ij}}$ excepto para los caminos entre el mismo nodo.
+La matriz de feromonas representa la cantidad que hay de ella en cada camino entre los nodos. Se inializan sus valores a $\frac{num-hormigas}{c_{ij}}$ excepto para los caminos entre el mismo nodo.
 
 ```
 self.tau = np.full((len(self.nodos), len(self.nodos)), 1, dtype=float)
