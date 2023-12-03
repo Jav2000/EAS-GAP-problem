@@ -28,12 +28,12 @@ La matriz de feromonas representa la cantidad que hay de ella en cada camino ent
 
 ```
 self.tau = np.full((len(self.nodos), len(self.nodos)), 1, dtype=float)
-        for i in range(len(self.nodos)):
-            for j in range(len(self.nodos)):
-                if i == j:
-                    self.tau[i][j] = 0
-                else:
-                    self.tau[i][j] = self.num_hormigas/self.nodos[j].coste
+for i in range(len(self.nodos)):
+  for j in range(len(self.nodos)):
+    if i == j:
+      self.tau[i][j] = 0
+    else:
+      self.tau[i][j] = self.num_hormigas/self.nodos[j].coste
 ```
 
 
@@ -54,17 +54,17 @@ $$
 
 ```
 probabilidades = []
-        if len(self.nodos_disponibles) == 1:
-            probabilidades.append(1)
-        else:
-            for nodo in self.nodos_disponibles:
-                nodo_origen = self.nodos.index(self.nodo_actual)
-                nodo_destino = self.nodos.index(nodo)
-                numerador = ((self.tau[nodo_origen][nodo_destino]**self.alpha)*(self.eta[nodo_origen][nodo_destino])**self.beta)
-                denominador = sum((self.tau[nodo_origen][u]**self.alpha)*(self.eta[nodo_origen][u]**self.beta) for u in self.posicion_nodos_disponibles())
-                probabilidades.append(numerador / denominador)
-        siguiente_nodo = random.choices(self.nodos_disponibles, probabilidades)[0]
-        self.actualizar_hormiga(siguiente_nodo)
+  if len(self.nodos_disponibles) == 1:
+    probabilidades.append(1)
+  else:
+    for nodo in self.nodos_disponibles:
+      nodo_origen = self.nodos.index(self.nodo_actual)
+      nodo_destino = self.nodos.index(nodo)
+      numerador = ((self.tau[nodo_origen][nodo_destino]**self.alpha)*(self.eta[nodo_origen][nodo_destino])**self.beta)
+      denominador = sum((self.tau[nodo_origen][u]**self.alpha)*(self.eta[nodo_origen][u]**self.beta) for u in self.posicion_nodos_disponibles())
+      probabilidades.append(numerador / denominador)
+  siguiente_nodo = random.choices(self.nodos_disponibles, probabilidades)[0]
+  self.actualizar_hormiga(siguiente_nodo)
 ```
 
 # Actualización de feromonas
