@@ -6,13 +6,34 @@ El objetivo es encontrar la asignación con coste mínimo entre los operarios y 
 </p>
 
 # Formato entrada
-    - Matriz de coste: (Columnas igual a operadores, filas igual a tareas)
+  - Matriz de coste: (Columnas igual a operadores, filas igual a tareas)
         2 3 2 3 2
         3 2 2 3 1
         4 3 1 3 2
         1 2 2 3 2
-    - Vector de tiempo requerido por tarea:
+  - Vector de tiempo requerido por tarea:
         3 2 2 3
-    - Vector de tiempo disponible por operador:
+  - Vector de tiempo disponible por operador:
         4 5 3 4 4
+
+# Parámetros del algoritmo
+  - Número de hormigas
+  - Número de hormigas elitistas
+  - Alpha
+  - Beta
+  - Ratio de evaporación
+
+# Inicialización de feromonas
+La matriz de feromonas representa la cantidad que hay de ella en cada camino entre los nodos. Se inializan sus valores a 1/c_{ij} excepto para los caminos entre el mismo nodo.
+
+# Inicialización de información heurística
+
+# Selección del nuevo nodo
+\[
+p_{ij}=
+\begin{cases}
+    \frac{[\tau_{ij}]^\alpha[\eta_{ij}]^\beta}{\sum_{u\in J_k(r)}[\tau_{iu}]^\alpha[\eta_{iu}]^\beta} & \text{if } j \text{ is reachable from } i \\
+    0 & \text{otherwise}
+\end{cases}
+\]
 
