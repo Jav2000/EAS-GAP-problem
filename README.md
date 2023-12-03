@@ -29,11 +29,37 @@ La matriz de feromonas representa la cantidad que hay de ella en cada camino ent
 # Inicialización de información heurística
 
 # Selección del nuevo nodo
-\[
+Las hormigas seleccionarán el siguiente nodo según la siguiente probabilidad:
+
+
+$$
 p_{ij}=
 \begin{cases}
     \frac{[\tau_{ij}]^\alpha[\eta_{ij}]^\beta}{\sum_{u\in J_k(r)}[\tau_{iu}]^\alpha[\eta_{iu}]^\beta} & \text{if } j \text{ is reachable from } i \\
     0 & \text{otherwise}
 \end{cases}
-\]
+$$
 
+```
+probabilidades = []
+        if len(self.nodos_disponibles) == 1:
+            probabilidades.append(1)
+        else:
+            for nodo in self.nodos_disponibles:
+                nodo_origen = self.nodos.index(self.nodo_actual)
+                nodo_destino = self.nodos.index(nodo)
+                numerador = ((self.tau[nodo_origen][nodo_destino]**self.alpha)*(self.eta[nodo_origen][nodo_destino])**self.beta)
+                denominador = sum((self.tau[nodo_origen][u]**self.alpha)*(self.eta[nodo_origen][u]**self.beta) for u in self.posicion_nodos_disponibles())
+                probabilidades.append(numerador / denominador)
+        siguiente_nodo = random.choices(self.nodos_disponibles, probabilidades)[0]
+        self.actualizar_hormiga(siguiente_nodo)
+```
+
+# Actualización de feromonas
+Se actualizan las feromonas siguiendo la siguiente ecuación: 
+
+$$\tau_{ij}(t)=(1-\rho)\tau_{ij}(t-1)+\sum_{k=1}^m\varDelta\tau_{ij}^k$$
+
+```
+
+```
