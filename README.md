@@ -70,7 +70,19 @@ probabilidades = []
 # Actualización de feromonas
 Se actualizan las feromonas siguiendo la siguiente ecuación: 
 
-$$\tau_{ij}(t)=(1-\rho)\tau_{ij}(t-1)+\sum_{k=1}^m\varDelta\tau_{ij}^k$$
+$$\tau_{ij}(t)=(1-\rho)\tau_{ij}(t-1)+\sum_{k=1}^m\varDelta\tau_{ij}^k+e\varDelta_{rs}^{mejor}$$
+
+donde e (número de hormigas elitistas) es un parámetro y:
+
+$$
+\varDelta_{rs}^{mejor}$ =
+\begin{cases}
+  \frac{1}{C^{mejor}} & \text{si arco(r,s) }\in L^{mejor} \\
+  0 & \text{en caso contrario}
+\end{cases}
+$$
+
+
 
 ```
 
