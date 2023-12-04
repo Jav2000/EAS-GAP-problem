@@ -110,7 +110,7 @@ class EAS:
                 if i == j:
                     self.tau[i][j] = 0
                 else:
-                    self.tau[i][j] = 1/self.nodos[j].coste
+                    self.tau[i][j] = self.num_hormigas/self.nodos[j].coste
 
         # Inicialización de información heurística
         self.eta = np.full((len(self.nodos), len(self.nodos)), 1)
