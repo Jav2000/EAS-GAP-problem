@@ -149,10 +149,14 @@ class EAS:
         # Adición de feromonas por las hormigas
         for hormiga in self.hormigas:
             caminos_recorridos = hormiga.caminos()
-            for caminos in caminos_recorridos:
-                self.eta[caminos[0]][caminos[1]] += 1/hormiga.coste
-                self.eta[caminos[1]][caminos[0]] += 1/hormiga.coste
-
+            mejor_solucion = self.mejor_solucion.caminos()
+            for camino in caminos_recorridos:
+                if camino in mejor_solucion:
+                    self.eta[camino[0]][camino[1]] += 1/hormiga.coste + self.num_hormigas_elitistas*(1/self.mejor_solucion.coste)
+                    self.eta[camino[1]][camino[0]] += 1/hormiga.coste + self.num_hormigas_elitistas*(1/self.mejor_solucion.coste)
+                else:
+                    self.eta[camino[0]][camino[1]] += 1/hormiga.coste
+                    self.eta[camino[1]][camino[0]] += 1/hormiga.coste
 
 # Problema a resolver
 matriz_coste = np.array([
