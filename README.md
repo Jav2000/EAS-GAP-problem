@@ -83,7 +83,20 @@ $$
 $$
 
 
-
 ```
+def actualizar_feromonas(self):
+  # Evaporación de la feromona
+  self.eta = self.eta * (1 - self.ratio_evaporacion)
 
+  # Adición de feromonas por las hormigas
+  for hormiga in self.hormigas:
+    caminos_recorridos = hormiga.caminos()
+    mejor_solucion = self.mejor_solucion.caminos()
+    for camino in caminos_recorridos:
+      if camino in mejor_solucion:
+        self.eta[camino[0]][camino[1]] += 1/hormiga.coste + self.num_hormigas_elitistas*(1/self.mejor_solucion.coste)
+        self.eta[camino[1]][camino[0]] += 1/hormiga.coste + self.num_hormigas_elitistas*(1/self.mejor_solucion.coste)
+      else:
+        self.eta[camino[0]][camino[1]] += 1/hormiga.coste
+        self.eta[camino[1]][camino[0]] += 1/hormiga.coste
 ```
