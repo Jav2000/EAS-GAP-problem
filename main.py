@@ -81,12 +81,13 @@ class Hormiga:
         return lista            
 
 class EAS:
-    def __init__(self, matriz_coste, vector_tiempo_tareas, vector_tiempo_operadores, num_hormigas, num_hormigas_elitistas, alpha, beta, ratio_evaporacion) -> None:
+    def __init__(self, matriz_coste, vector_tiempo_tareas, vector_tiempo_operadores, objetivo, num_hormigas, num_hormigas_elitistas, alpha, beta, ratio_evaporacion) -> None:
         # Datos problema
         self.matriz_coste = matriz_coste
         self.num_tareas, self.num_operadores = self.matriz_coste.shape
         self.vector_tiempo_tareas = vector_tiempo_tareas
         self.vector_tiempo_operadores = vector_tiempo_operadores
+        self.objetivo = objetivo
 
         # Parámetros algoritmo EAS
         self.num_hormigas = num_hormigas
@@ -110,18 +111,25 @@ class EAS:
                 if i == j:
                     self.tau[i][j] = 0
                 else:
-                    self.tau[i][j] = self.num_hormigas/self.nodos[j].coste
+                    self.tau[i][j] = 1/self.nodos[j].coste
 
         # Inicialización de información heurística
-        self.eta = np.full((len(self.nodos), len(self.nodos)), 1)
-
+        self.eta = np.full((len(self.nodos), len(self.nodos)), 1, dtype=float)
+        for i in range(len(self.nodos)):
+            for j in range(len(self.nodos)):
+                if i == j:
+                    self.eta[i][j] = 0
+                else:
+                    self.eta[i][j] = 1/self.nodos[j].coste
         self.mejor_solucion = None
         self.coste_mejor_solucion = 999999999
 
     def start(self, num_iteraciones):
         # Hasta que se cumpla el número de iteraciones
+        mejor_iteracion = 0
         for iteracion in range(num_iteraciones):
             self.hormigas = []
+            mejor_sol = False
             for _ in range(self.num_hormigas):
                 # Inicialización de hormigas en un nodo aleatorio
                 hormiga = Hormiga(self.nodos, self.vector_tiempo_operadores, self.vector_tiempo_tareas, self.tau, self.eta, self.alpha, self.beta, random.choice(self.nodos))
@@ -135,11 +143,17 @@ class EAS:
                 if hormiga.coste < self.coste_mejor_solucion:
                     self.mejor_solucion = hormiga
                     self.coste_mejor_solucion = hormiga.coste
-
+                    if not mejor_sol:
+                        mejor_sol = True
+                        mejor_iteracion = iteracion
+                    if self.coste_mejor_solucion <= self.objetivo:
+                        break
+            if self.coste_mejor_solucion <= self.objetivo:
+                break
             # Actualización de las feromonas
             self.actualizar_feromonas()
 
-        return self.mejor_solucion
+        return self.mejor_solucion, mejor_iteracion
     
     # Actualización de las feromonas
     def actualizar_feromonas(self):
@@ -159,18 +173,45 @@ class EAS:
                     self.eta[camino[1]][camino[0]] += 1/hormiga.coste
 
 # Problema a resolver
-matriz_coste = np.array([
+matriz_coste_1 = np.array([
     [2, 3, 2, 3, 2],
     [3, 2, 2, 3, 1],
     [4, 3, 1, 3, 2],
     [1, 2, 2, 3, 2]
 ])
-num_tareas, num_operadores = matriz_coste.shape
-vector_tiempo_tareas = [3, 2, 2, 3]
-vector_tiempo_operadores = [4, 5, 3, 4, 4]
+num_tareas_1, num_operadores_1 = matriz_coste_1.shape
+vector_tiempo_tareas_1 = [3, 2, 2, 3]
+vector_tiempo_operadores_1 = [4, 5, 3, 4, 4]
 
-sistema = EAS(matriz_coste, vector_tiempo_tareas, vector_tiempo_operadores, 10, 10, 1, 3, 0.5)
-mejor_solucion = sistema.start(20)
-print("Mejor solución con coste " + str(mejor_solucion.coste))
-for nodo in mejor_solucion.solucion:
-    print("\t" + str(nodo))
+matriz_coste_2_transpuesta = np.array([
+    [8, 18, 22, 5, 11, 11, 22, 11, 17, 22, 11, 20, 13, 13, 7, 22, 15, 22, 24, 8, 8, 24, 18, 8],
+    [24, 14, 11, 15, 24, 8, 10, 15, 19, 25, 6, 13, 10, 25, 19, 24, 13, 12, 5, 18, 10, 24, 8, 5],
+    [22, 22, 21, 22, 13, 16, 21, 5, 25, 13, 12, 9, 24, 6, 22, 24, 11, 21, 11, 14, 12, 10, 20, 6],
+    [13, 8, 19, 12, 19, 18, 10, 21, 5, 9, 11, 9, 22, 8, 12, 13, 9, 25, 19, 24, 22, 6, 19, 14],
+    [25, 16, 13, 5, 11, 8, 7, 8, 25, 20, 24, 20, 11, 6, 10, 10, 6, 22, 10, 10, 13, 21, 5, 19],
+    [19, 19, 5, 11, 22, 24, 18, 11, 6, 13, 24, 24, 22, 6, 22, 5, 14, 6, 16, 11, 6, 8, 18, 10],
+    [24, 10, 9, 10, 6, 15, 7, 13, 20, 8, 7, 9, 24, 9, 21, 9, 11, 19, 10, 5, 23, 20, 5, 21],
+    [6, 9, 9, 5, 12, 10, 16, 15, 19, 18, 20, 18, 16, 21, 11, 12, 22, 16, 21, 25, 7, 14, 16, 10]
+])
+matriz_coste_2 = np.transpose(matriz_coste_2_transpuesta)
+
+num_tareas_2, num_operadores_2 = matriz_coste_2.shape
+vector_tiempo_tareas_2 = [8, 9, 13, 9, 10, 9, 10, 6, 4, 8, 7, 4, 8, 13, 8, 6, 9, 12, 9, 4, 9, 12, 10, 5]
+vector_tiempo_operadores_2 = [36, 35, 38, 34, 32, 34, 31, 34]
+
+numero_hormigas = [1, 2, 4, 8, 16, 32]
+numero_hormigas_elitistas = [1, 2, 4, 8, 10, 12, 16]
+for i in numero_hormigas:
+    for j in numero_hormigas_elitistas:
+        resultados = []
+        iteraciones = []
+        if j > i:
+            continue
+        else:
+            for k in range(5):
+                sistema = EAS(matriz_coste_1, vector_tiempo_tareas_1, vector_tiempo_operadores_1, 5, i, j, 1, 3, 0.5)
+                mejor_solucion, mejor_iteracion = sistema.start(25)
+                resultados.append(mejor_solucion.coste)
+                iteraciones.append(mejor_iteracion)
+            print("Resultados " + str(i) +  " hormigas y " + str(j) + " de elite: " + str(resultados))
+            print("Iteraciones " + str(i) +  " hormigas y " + str(j) + " de elite: " + str(iteraciones))
